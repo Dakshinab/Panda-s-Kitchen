@@ -1,0 +1,90 @@
+.contact-section {
+    padding: 80px 0;
+    background-color: #f9f9f9;
+}
+
+.contact-container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-desc {
+    margin-bottom: 30px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.info-item .icon {
+    font-size: 1.5rem;
+    background: var(--secondary-color);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.info-item h4 {
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.info-item p {
+    color: #555;
+}
+
+.order-actions {
+    margin-top: 40px;
+}
+
+.order-actions h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.partners {
+    display: flex;
+    gap: 15px;
+}
+
+.partner-btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.partner-btn.uber {
+    background: #06C167;
+    color: white;
+}
+
+.partner-btn.pickme {
+    background: #FFD200;
+    color: black;
+}
+
+.contact-map {
+    flex: 1;
+}
+
+.contact-map img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        flex-direction: column;
+    }
+}

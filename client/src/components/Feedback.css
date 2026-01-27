@@ -1,0 +1,46 @@
+.feedback-section {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.feedback-slider {
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.feedback-card {
+    background: var(--secondary-color);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.stars {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.customer-name {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Slick dots customization */
+.slick-dots li button:before {
+    color: var(--primary-color);
+}
+
+.slick-dots li.slick-active button:before {
+    color: var(--accent-color);
+}
