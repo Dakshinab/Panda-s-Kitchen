@@ -1,44 +1,79 @@
 import React from 'react';
 import './Footer.css';
+import pandaLogo from '../assets/panda.jpeg';
 
 const Footer = () => {
+    const scrollToSection = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <footer className="footer">
             <div className="container footer-container">
-                <div className="footer-logo">
-                    <h2>Panda's Kitchen</h2>
-                    <p>Homemade Fresh Goodness</p>
+                {/* Section 1: Logo & Description */}
+                <div className="footer-section brand-section">
+                    <img src={pandaLogo} alt="Panda's Kitchen" className="footer-logo-img" />
+                    <p className="brand-desc">
+                        Crafting warm, homemade memories in every bite.<br />
+                        From our kitchen to your heart,<br />
+                        experience the joy of fresh goodness.
+                    </p>
                 </div>
 
-                <div className="footer-links">
+                {/* Section 2: Quick Links */}
+                <div className="footer-section links-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#menu">Menu</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#promotions">Offers</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li onClick={() => scrollToSection('picked-for-you')}>Picked for You</li>
+                        <li onClick={() => scrollToSection('appetizers')}>Appetizers</li>
+                        <li onClick={() => scrollToSection('breakfast-burgers')}>Breakfast Burgers</li>
+                        <li onClick={() => scrollToSection('regular-burgers')}>Regular Burgers</li>
+                        <li onClick={() => scrollToSection('ultra-max-burgers')}>Ultra Max Burgers</li>
                     </ul>
                 </div>
 
-                <div className="footer-subscribe">
-                    <h3>Stay Updated</h3>
-                    <div className="subscribe-box">
-                        <input type="email" placeholder="Enter your email" />
-                        <button>Subscribe</button>
+                {/* Section 3: Follow Us */}
+                <div className="footer-section social-section">
+                    <h3>Follow Us</h3>
+                    <div className="social-icons">
+                        {/* Facebook Icon */}
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        {/* Instagram Icon */}
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        {/* TikTok Icon */}
+                        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
-                <div className="footer-social">
-                    <h3>Follow Us</h3>
-                    <div className="social-icons">
-                        <span>FB</span>
-                        <span>IG</span>
-                        <span>TW</span>
+                {/* Section 4: Stay Updated */}
+                <div className="footer-section subscribe-section">
+                    <h3>Stay Updated</h3>
+                    <div className="subscribe-box">
+                        <input type="email" placeholder="Your email address" />
+                        <button>Subscribe</button>
                     </div>
                 </div>
             </div>
+
             <div className="footer-bottom">
-                <p>&copy; 2026 Panda's Kitchen. All Rights Reserved. | Made with ❤️</p>
+                <p>&copy; {new Date().getFullYear()} Panda's Kitchen. Homemade Fresh Goodness.</p>
             </div>
         </footer>
     );

@@ -1,20 +1,22 @@
 .feedback-section {
     padding: 80px 20px;
     text-align: center;
-    background-color: white;
 }
 
 .feedback-slider {
     max-width: 800px;
     margin: 40px auto;
+    padding: 0 20px;
 }
 
 .feedback-card {
-    background: var(--secondary-color);
+    background: white;
     padding: 40px;
     border-radius: 20px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin: 0 10px;
+    outline: none;
 }
 
 .stars {
@@ -36,11 +38,66 @@
     font-size: 1.1rem;
 }
 
-/* Slick dots customization */
-.slick-dots li button:before {
-    color: var(--primary-color);
+/* Slick slider customization */
+.feedback-slider .slick-slide {
+    padding: 0 10px;
 }
 
-.slick-dots li.slick-active button:before {
+.feedback-slider .slick-slide>div {
+    display: flex;
+    justify-content: center;
+}
+
+.feedback-slider .slick-list {
+    margin: 0 -10px;
+    padding: 20px 0;
+}
+
+/* Slick dots customization */
+.feedback-slider .slick-dots {
+    bottom: -40px;
+}
+
+.feedback-slider .slick-dots li button:before {
+    color: var(--primary-color);
+    font-size: 12px;
+}
+
+.feedback-slider .slick-dots li.slick-active button:before {
     color: var(--accent-color);
+}
+
+/* Slick arrows customization */
+.feedback-slider .slick-prev,
+.feedback-slider .slick-next {
+    z-index: 1;
+}
+
+.feedback-slider .slick-prev {
+    left: -40px;
+}
+
+.feedback-slider .slick-next {
+    right: -40px;
+}
+
+.feedback-slider .slick-prev:before,
+.feedback-slider .slick-next:before {
+    color: var(--primary-color);
+    font-size: 30px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .feedback-slider .slick-prev {
+        left: -20px;
+    }
+
+    .feedback-slider .slick-next {
+        right: -20px;
+    }
+
+    .feedback-card {
+        padding: 30px 20px;
+    }
 }

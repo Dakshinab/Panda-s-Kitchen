@@ -5,11 +5,10 @@ const Popup = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Show popup after 1 second
+        // Show popup immediately every time
         const timer = setTimeout(() => {
             setIsVisible(true);
-        }, 1000);
-
+        }, 0);
         return () => clearTimeout(timer);
     }, []);
 
@@ -23,11 +22,17 @@ const Popup = () => {
         <div className="popup-overlay">
             <div className="popup-content">
                 <button className="close-btn" onClick={closePopup}>&times;</button>
+
+                <div className="popup-badge">Special Announcement</div>
+
                 <div className="popup-body">
-                    <h2>🎉 3rd Anniversary Special! 🎉</h2>
-                    <p className="countdown-text">In 5 Days</p>
-                    <p>Get ready for exclusive offers and new menu items.</p>
-                    <p><strong>Coming Soon to Panda's Kitchen</strong></p>
+                    <h2>Panda's Kitchen <br /> Turns 3! 🎉</h2>
+                    <p className="announcement-text">
+                        In 5 days, we’re celebrating our 3rd anniversary with exciting offers and surprises.
+                    </p>
+                    <div className="popup-actions">
+                        <button className="cta-btn" onClick={closePopup}>View Upcoming Offers</button>
+                    </div>
                 </div>
             </div>
         </div>

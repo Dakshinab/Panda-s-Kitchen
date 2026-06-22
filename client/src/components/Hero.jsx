@@ -1,85 +1,113 @@
-import React from 'react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Hero.css';
 
+// Fallback slides in case DB is empty
+const DEFAULT_SLIDES = [
+    {
+        _id: 'default1',
+        imageUrl: '/assets/slide1.jpg'
+    },
+    {
+        _id: 'default2',
+        imageUrl: '/assets/slide2.jpg'
+    }
+];
+
 const Hero = () => {
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 2500,
-        fade: true,
-        cssEase: 'linear'
+    const [slides, setSlides] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        const fetchSlides = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/api/hero');
+                if (res.data && res.data.length > 0) {
+                    setSlides(res.data);
+                } else {
+                    setSlides(DEFAULT_SLIDES);
+                }
+            } catch (err) {
+                console.error('Error fetching hero slides:', err);
+                setSlides(DEFAULT_SLIDES);
+            }
+        };
+        fetchSlides();
+    }, []);
+
+    // Auto-slide every 3 seconds
+    useEffect(() => {
+        if (slides.length <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [slides.length]);
+
+    // Get the position class for each slide
+    const getSlideClass = (index) => {
+        if (slides.length === 1) return 'carousel-slide active';
+        const diff = (index - currentIndex + slides.length) % slides.length;
+
+        if (diff === 0) return 'carousel-slide active';
+        if (diff === 1) return 'carousel-slide right';
+        if (diff === slides.length - 1) return 'carousel-slide left';
+        return 'carousel-slide hidden';
     };
 
-    const slides = [
-        {
-            id: 1,
-            title: "Homemade Fresh Goodness",
-            subtitle: "Taste the difference of pure, home-style cooking.",
-            image: "https://placehold.co/1920x800/FFC107/FFFFFF?text=Classic+Burger", // Placeholder
-            color: "#FFC107"
-        },
-        {
-            id: 2,
-            title: "Juicy, Cheesy, Irresistible",
-            subtitle: "Our Ultra Max Burgers are packed with flavor.",
-            image: "https://placehold.co/1920x800/FF9800/FFFFFF?text=Ultra+Max+Burger",
-            color: "#FF9800"
-        },
-        {
-            id: 3,
-            title: "Freshly Made Every Day",
-            subtitle: "No artificial flavors, just real food.",
-            image: "https://placehold.co/1920x800/4CAF50/FFFFFF?text=Fresh+Ingredients",
-            color: "#4CAF50"
-        },
-        {
-            id: 4,
-            title: "Start Your Day Right",
-            subtitle: "Delicious Breakfast Burgers served until 11 AM.",
-            image: "https://placehold.co/1920x800/2196F3/FFFFFF?text=Breakfast+Burger",
-            color: "#2196F3"
-        },
-        {
-            id: 5,
-            title: "Perfect Sides",
-            subtitle: "Crispy fries and more to complete your meal.",
-            image: "https://placehold.co/1920x800/9C27B0/FFFFFF?text=Crispy+Fries",
-            color: "#9C27B0"
-        }
-    ];
-
     const handleOrder = () => {
-        // Simple logic to choose random provider or verify user intent, 
-        // here we can just open a modal or window.
         window.open('https://www.ubereats.com', '_blank');
     };
 
     return (
         <div className="hero-section">
-            <Slider {...settings}>
-                {slides.map(slide => (
-                    <div key={slide.id} className="hero-slide">
-                        <div className="hero-image" style={{ backgroundImage: `url(${slide.image})` }}>
+            <div className="carousel-container">
+                {slides.map((slide, index) => (
+                    <div
+                        key={slide._id}
+                        className={getSlideClass(index)}
+                    >
+                        <div
+                            className="carousel-image"
+                            style={{ backgroundImage: `url(${slide.imageUrl})` }}
+                        >
                             <div className="hero-overlay"></div>
-                            <div className="hero-content container">
-                                <h1 className="hero-title">{slide.title}</h1>
-                                <p className="hero-subtitle">{slide.subtitle}</p>
-                                <div className="hero-buttons">
-                                    <button className="btn-primary" onClick={handleOrder}>Order Now (Uber Eats)</button>
-                                    <button className="btn-secondary" onClick={() => window.open('https://pickme.lk/food', '_blank')}>PickMe Food</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 ))}
-            </Slider>
+            </div>
+
+            {/* Hero Content - Only Buttons */}
+            <div className="hero-content-wrapper">
+                <div className="hero-content container">
+                    <div className="hero-buttons">
+                        <button className="btn-uber" onClick={handleOrder}>
+                            Order with Uber
+                        </button>
+                        <button
+                            className="btn-pickme"
+                            onClick={() => window.open('https://pickme.lk/food', '_blank')}
+                        >
+                            Order with PickMe
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Carousel Indicators */}
+            {slides.length > 1 && (
+                <div className="carousel-indicators">
+                    {slides.map((_, index) => (
+                        <button
+                            key={index}
+                            className={`indicator ${index === currentIndex ? 'active' : ''}`}
+                            onClick={() => setCurrentIndex(index)}
+                            aria-label={`Go to slide ${index + 1}`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

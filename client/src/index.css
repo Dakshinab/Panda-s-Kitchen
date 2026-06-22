@@ -1,18 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 :root {
-  --primary-color: #FFC107;
-  /* Yellow */
+  --primary-color: #FFD77A;
+  /* Updated Yellow */
   --secondary-color: #FFF8E1;
-  /* Light Yellow Background */
-  --text-color: #333333;
-  --white: #FFFFFF;
-  --accent-color: #FF9800;
-  /* Darker Orange/Yellow for accents */
-  --font-heading: 'Century Gothic', 'Century', sans-serif;
-  /* Modern, clean */
-  --font-body: 'Century Gothic', 'Century', sans-serif;
-  /* Consistent, sleek */
+  --text-color: #333;
+  --white: #F5F6F7;
+  --accent-color: #FFBF00;
+  /* Amber Yellow for titles */
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
   --transition: all 0.3s ease-in-out;
 }
 
@@ -24,10 +21,13 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--white);
+  background: linear-gradient(to bottom, #FFFFFF, #FFFDD0);
+  background-attachment: fixed;
+  /* Ensures gradient covers full scroll */
   color: var(--text-color);
   overflow-x: hidden;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 h1,
@@ -37,7 +37,6 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
-  color: var(--text-color);
 }
 
 a {
@@ -55,7 +54,7 @@ button {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
