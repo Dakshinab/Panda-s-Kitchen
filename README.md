@@ -134,7 +134,6 @@ The admin panel is available at `http://localhost:5173/admin`
 
 **Dakshina Dissanayake**  
 Software Engineer  
-Final Year Project — Faculty of Information Technology, Horizon Campus  
 dakshinabanu@gmail.com  
 [GitHub](https://github.com/Dakshinab)
 
