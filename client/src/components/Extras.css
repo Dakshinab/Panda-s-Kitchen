@@ -1,212 +1,160 @@
+/* ── Extras Section ── */
 .extras-section {
-    padding: 60px 20px;
-    text-align: center;
+    padding: 80px 0;
+    background: var(--cream);
 }
 
 .extras-title {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--dark);
     margin-bottom: 40px;
-    color: #333;
+    text-align: center;
 }
 
+/* Tab buttons */
 .extras-buttons-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 12px;
     margin-bottom: 40px;
     flex-wrap: wrap;
 }
 
 .extras-category-btn {
-    padding: 12px 24px;
-    border: none;
-    background-color: transparent;
-    font-size: 1.1rem;
+    padding: 11px 28px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: #555;
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 2px solid transparent;
+    transition: all 0.25s ease;
+    border-radius: 12px;
+    font-family: var(--font);
 }
 
 .extras-category-btn:hover {
-    color: #FFD77A;
-    /* Using the specified yellow */
-    background-color: rgba(255, 215, 122, 0.1);
-    border-radius: 4px;
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .extras-category-btn.active {
-    color: #333;
-    /* Or keep it neutral/dark */
-    border-bottom: 3px solid #FFD77A;
-    /* Underline effect */
-    background-color: rgba(255, 215, 122, 0.2);
-    border-radius: 4px 4px 0 0;
+    background: var(--dark);
+    color: white;
+    border-color: var(--dark);
 }
 
 .btn-subtext {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 400;
-    color: #777;
-    margin-top: 4px;
+    opacity: 0.7;
+    margin-top: 3px;
 }
 
+/* Card grid — horizontal scroll */
 .extras-content-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    gap: 20px;
-    animation: fadeIn 0.5s ease-in-out;
-    padding-bottom: 20px;
+    gap: 24px;
+    padding-bottom: 16px;
+    animation: fadeIn 0.4s ease;
     scrollbar-width: thin;
+    scrollbar-color: var(--primary) #f5ead5;
 }
 
-.extras-content-grid::-webkit-scrollbar {
-    height: 8px;
-}
-
-.extras-content-grid::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.extras-content-grid::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
-}
+.extras-content-grid::-webkit-scrollbar { height: 6px; }
+.extras-content-grid::-webkit-scrollbar-track { background: #f5ead5; border-radius: 10px; }
+.extras-content-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Card */
 .extras-card {
-    background-color: #fff;
-    border-radius: 12px;
+    background: white;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    border: 1.5px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
     flex: 0 0 280px;
-    /* Fixed width */
     min-width: 280px;
 }
 
 .extras-card:hover {
-    transform: translateY(-5px);
-}
-
-/* Zoom on hover */
-.extras-card:hover .extras-card-image {
-    transform: scale(1.1);
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+    border-color: var(--primary);
 }
 
 .extras-card-image {
     width: 100%;
     aspect-ratio: 1 / 1;
-    /* 1:1 Square */
-    background-color: #e0e0e0;
-    background-image: url('https://via.placeholder.com/400x300?text=Extras');
+    background-color: var(--cream);
     background-size: cover;
     background-position: center;
     transition: transform 0.5s ease;
+    overflow: hidden;
 }
 
+.extras-card:hover .extras-card-image { transform: scale(1.06); }
+
 .extras-card-body {
-    padding: 20px;
+    padding: 18px 20px 20px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    position: relative;
-    z-index: 1;
-    background: #fff;
 }
 
 .extras-card-body h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.25rem;
-    color: #333;
-}
-
-.extras-subtext {
-    display: block;
-    color: #888;
-    margin-bottom: 8px;
-    font-style: italic;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 6px;
 }
 
 .extras-card-body p {
-    color: #666;
-    margin-bottom: 20px;
-    line-height: 1.5;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    line-height: 1.6;
     flex-grow: 1;
+    margin-bottom: 12px;
 }
 
-.extras-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: auto;
+.extras-price {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--dark);
+    margin-bottom: 14px;
 }
+
+.extras-buttons { display: flex; gap: 8px; margin-top: auto; }
 
 .order-btn {
     flex: 1;
-    padding: 10px;
+    padding: 10px 8px;
+    border-radius: 10px;
     border: none;
-    border-radius: 6px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    transition: all 0.25s ease;
+    font-family: var(--font);
 }
 
-.order-btn.uber {
-    background-color: #06C167;
-    color: white;
-}
+.order-btn.uber { background: var(--dark); color: white; }
+.order-btn.uber:hover { background: var(--dark2); transform: translateY(-1px); }
+.order-btn.pickme { background: var(--primary); color: white; }
+.order-btn.pickme:hover { background: var(--primary-dark); transform: translateY(-1px); }
 
-.order-btn.uber:hover {
-    background-color: #05a357;
-}
-
-.order-btn.pickme {
-    background-color: #F8B400;
-    color: white;
-}
-
-.order-btn.pickme {
-    background-color: #D32F2F;
-}
-
-.order-btn.pickme:hover {
-    background-color: #b71c1c;
-}
-
-/* Mobile responsiveness */
 @media (max-width: 768px) {
-    .extras-buttons-container {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .extras-category-btn {
-        width: 100%;
-        flex: 1 1 45%;
-        margin-bottom: 10px;
-    }
-
-    .extras-card {
-        flex: 0 0 250px;
-        min-width: 250px;
-    }
+    .extras-section { padding: 50px 0; }
+    .extras-card { flex: 0 0 240px; min-width: 240px; }
 }

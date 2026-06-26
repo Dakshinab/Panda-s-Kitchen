@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useOutletContext } from 'react-router-dom';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 const EditIcon = () => (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -15,30 +16,22 @@ const DeleteIcon = () => (
     </svg>
 );
 
-const ManageOptions = () => {
+const ManageBeverages = () => {
     const { showToast } = useOutletContext();
-    const [activeTab, setActiveTab] = useState('Sandwiches');
     const [items, setItems] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [formData, setFormData] = useState({ title: '', subtitle: '', price: '', image: null, uberLink: '', pickMeLink: '' });
     const [isUploading, setIsUploading] = useState(false);
+    const API_URL = 'http://localhost:5000/api/extras';
 
-    const EXTRAS_API = 'http://localhost:5000/api/extras';
-    const OFFERS_API = 'http://localhost:5000/api/offers';
+    useEffect(() => { fetchItems(); }, []);
 
-    useEffect(() => { fetchData(); }, [activeTab]);
-
-    const fetchData = async () => {
+    const fetchItems = async () => {
         try {
-            if (activeTab === 'Combo Deals') {
-                const res = await axios.get(OFFERS_API);
-                setItems(res.data.filter(o => o.type === 'Special'));
-            } else {
-                const res = await axios.get(EXTRAS_API);
-                setItems(res.data.filter(e => e.category === activeTab));
-            }
-        } catch { setItems([]); }
+            const res = await axios.get(API_URL);
+            setItems(res.data.filter(i => i.category === 'Beverages'));
+        } catch (err) { console.error(err); }
     };
 
     const handleSubmit = async (e) => {
@@ -47,44 +40,31 @@ const ManageOptions = () => {
         data.append('title', formData.title);
         data.append('subtitle', formData.subtitle);
         data.append('price', formData.price);
-        data.append('uberLink', formData.uberLink);
-        data.append('pickMeLink', formData.pickMeLink);
+        data.append('category', 'Beverages');
+        data.append('uberLink', formData.uberLink || '');
+        data.append('pickMeLink', formData.pickMeLink || '');
         if (formData.image) data.append('image', formData.image);
-        if (activeTab === 'Combo Deals') { data.append('type', 'Special'); data.append('content', formData.subtitle); }
-        else { data.append('category', activeTab); }
-        const API = activeTab === 'Combo Deals' ? OFFERS_API : EXTRAS_API;
         try {
-            if (editingItem) { await axios.put(`${API}/${editingItem._id}`, data); }
-            else { await axios.post(API, data); }
-            setIsModalOpen(false); setEditingItem(null); fetchData(); showToast('Item saved!', 'success');
+            if (editingItem) { await axios.put(`${API_URL}/${editingItem._id}`, data); }
+            else { await axios.post(API_URL, data); }
+            setIsModalOpen(false); setEditingItem(null);
+            setFormData({ title: '', subtitle: '', price: '', image: null, uberLink: '', pickMeLink: '' });
+            fetchItems(); showToast('Beverage saved!', 'success');
         } catch { showToast('Failed to save.', 'error'); } finally { setIsUploading(false); }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete this item?')) {
-            const API = activeTab === 'Combo Deals' ? OFFERS_API : EXTRAS_API;
-            try { await axios.delete(`${API}/${id}`); fetchData(); showToast('Deleted.', 'success'); }
+            try { await axios.delete(`${API_URL}/${id}`); fetchItems(); showToast('Deleted.', 'success'); }
             catch { showToast('Failed to delete.', 'error'); }
         }
-    };
-
-    const openModal = (item = null) => {
-        setEditingItem(item);
-        setFormData(item ? { title: item.title, subtitle: item.subtitle || '', price: item.price, image: null, uberLink: item.uberLink || '', pickMeLink: item.pickMeLink || '' }
-            : { title: '', subtitle: '', price: '', image: null, uberLink: '', pickMeLink: '' });
-        setIsModalOpen(true);
     };
 
     return (
         <div className="admin-page">
             <div className="admin-header">
-                <h1>Manage Options <span className="admin-count-badge">{items.length} items</span></h1>
-                <button className="admin-btn admin-btn-primary" onClick={() => openModal()}>+ Add New {activeTab === 'Combo Deals' ? 'Deal' : activeTab.slice(0, -1)}</button>
-            </div>
-            <div className="admin-sub-nav">
-                {['Sandwiches', 'Submarines', 'Combo Deals'].map(tab => (
-                    <button key={tab} className={`admin-sub-btn ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>{tab}</button>
-                ))}
+                <h1>Manage Beverages <span className="admin-count-badge">{items.length} items</span></h1>
+                <button className="admin-btn admin-btn-primary" onClick={() => { setEditingItem(null); setFormData({ title: '', subtitle: '', price: '', image: null, uberLink: '', pickMeLink: '' }); setIsModalOpen(true); }}>+ Add New Beverage</button>
             </div>
             <div className="admin-card">
                 <table className="admin-table">
@@ -102,7 +82,7 @@ const ManageOptions = () => {
                                 <td><span className="cell-price">LKR {Number(item.price).toLocaleString()}</span></td>
                                 <td>
                                     <div className="admin-btn-icon-group">
-                                        <button className="admin-btn-icon edit" title="Edit" onClick={() => openModal(item)}><EditIcon /></button>
+                                        <button className="admin-btn-icon edit" title="Edit" onClick={() => { setEditingItem(item); setFormData({ ...item, image: null }); setIsModalOpen(true); }}><EditIcon /></button>
                                         <button className="admin-btn-icon delete" title="Delete" onClick={() => handleDelete(item._id)}><DeleteIcon /></button>
                                     </div>
                                 </td>
@@ -110,21 +90,27 @@ const ManageOptions = () => {
                         ))}
                     </tbody>
                 </table>
-                {items.length === 0 && <div className="admin-empty"><div className="admin-empty-icon">📋</div><div className="admin-empty-text">No {activeTab} yet.</div></div>}
+                {items.length === 0 && (
+                    <div className="admin-empty">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 12px' }}><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/></svg>
+                        <div className="admin-empty-text">No beverages yet. Add your first one!</div>
+                    </div>
+                )}
             </div>
             {isModalOpen && (
                 <div className="admin-modal-overlay">
                     <div className="admin-modal">
-                        <h2>{editingItem ? 'Edit Item' : 'Add New Item'}</h2>
+                        <h2>{editingItem ? 'Edit Beverage' : 'Add New Beverage'}</h2>
                         <form onSubmit={handleSubmit}>
-                            <div className="admin-form-group"><label>Title</label><input type="text" required value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} /></div>
-                            <div className="admin-form-group"><label>Description</label><textarea required rows="3" value={formData.subtitle} onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })} /></div>
-                            <div className="admin-form-group"><label>Price (LKR)</label><input type="number" required value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} /></div>
-                            <div className="admin-form-group"><label>Uber Eats Link</label><input type="text" placeholder="https://..." value={formData.uberLink} onChange={(e) => setFormData({ ...formData, uberLink: e.target.value })} /></div>
-                            <div className="admin-form-group"><label>PickMe Link</label><input type="text" placeholder="https://..." value={formData.pickMeLink} onChange={(e) => setFormData({ ...formData, pickMeLink: e.target.value })} /></div>
+                            <div className="admin-form-group"><label>Title</label><input type="text" required placeholder="e.g. Fresh Orange Juice" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} /></div>
+                            <div className="admin-form-group"><label>Description</label><textarea required rows="3" placeholder="Short description" value={formData.subtitle} onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })} /></div>
+                            <div className="admin-form-group"><label>Price (LKR)</label><input type="number" required placeholder="e.g. 350" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} /></div>
+                            <hr className="admin-form-divider" />
+                            <div className="admin-form-group"><label>Uber Eats Link</label><input type="text" placeholder="https://..." value={formData.uberLink || ''} onChange={(e) => setFormData({ ...formData, uberLink: e.target.value })} /></div>
+                            <div className="admin-form-group"><label>PickMe Food Link</label><input type="text" placeholder="https://..." value={formData.pickMeLink || ''} onChange={(e) => setFormData({ ...formData, pickMeLink: e.target.value })} /></div>
                             <div className="admin-form-group"><label>Image</label><input type="file" accept="image/*" onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })} /></div>
                             <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-                                <button type="submit" className="admin-btn admin-btn-primary" disabled={isUploading} style={{ flex: 1 }}>{isUploading ? <><span className="spinner"></span>Uploading...</> : 'Save'}</button>
+                                <button type="submit" className="admin-btn admin-btn-primary" disabled={isUploading} style={{ flex: 1 }}>{isUploading ? <><span className="spinner"></span>Uploading...</> : (editingItem ? 'Save Changes' : 'Add Beverage')}</button>
                                 <button type="button" className="admin-btn" style={{ background: '#F1F5F9', color: '#64748B' }} onClick={() => setIsModalOpen(false)} disabled={isUploading}>Cancel</button>
                             </div>
                         </form>
@@ -134,4 +120,5 @@ const ManageOptions = () => {
         </div>
     );
 };
-export default ManageOptions;
+
+export default ManageBeverages;

@@ -2,50 +2,20 @@ import React from 'react';
 import axios from 'axios';
 import './MenuSections.css';
 
-export const handleOrder = (platform) => {
-    if (platform === 'uber') {
-        window.open('https://www.ubereats.com', '_blank');
-    } else {
-        window.open('https://pickme.lk/food', '_blank');
-    }
+const BADGE_COLORS = {
+    red:    '#e74c3c',
+    green:  '#27ae60',
+    blue:   '#2980b9',
+    orange: '#e67e22',
+    purple: '#8e44ad',
+    gold:   '#f39c12',
 };
 
 export const sectionsData = [
-    {
-        id: 'picked-for-you',
-        title: 'Picked for You',
-        subtitle: 'Our chef\'s special recommendations',
-        itemTitle: 'Chef\'s Special Combo',
-        description: 'A curated selection of our best sellers just for you.'
-    },
-    {
-        id: 'appetizers',
-        title: 'Appetizers',
-        subtitle: 'Start your meal right',
-        itemTitle: 'Crispy Calamari Rings',
-        description: 'Golden fried calamari served with tartare sauce.'
-    },
-    {
-        id: 'breakfast-burgers',
-        title: 'Breakfast Burgers',
-        subtitle: 'Available until 11:00 AM daily',
-        itemTitle: 'Morning Glory Burger',
-        description: 'A perfect start to your day with egg, cheese, and our signature patty.'
-    },
-    {
-        id: 'regular-burgers',
-        title: 'All Day Burgers',
-        subtitle: null,
-        itemTitle: 'Classic Panda Burger',
-        description: 'The burger that started it all. Fresh, juicy, and irresistible.'
-    },
-    {
-        id: 'ultra-max-burgers',
-        title: 'Ultra Max Burgers',
-        subtitle: null,
-        itemTitle: 'The Titan Stack',
-        description: 'Double patty, double cheese, double the flavor. For the hungry ones.'
-    }
+    { id: 'picked-for-you',    title: 'Picked For You',      subtitle: "Our chef's special recommendations" },
+    { id: 'breakfast-burgers', title: 'Breakfast Burgers',    subtitle: 'Available until 11:00 AM daily' },
+    { id: 'regular-burgers',   title: 'All Day Burgers',      subtitle: null },
+    { id: 'ultra-max-burgers', title: 'Ultra Max Burgers',    subtitle: null }
 ];
 
 export const MenuCategory = ({ data, titleClass }) => {
@@ -66,11 +36,7 @@ export const MenuCategory = ({ data, titleClass }) => {
     }, [data.title]);
 
     const handleItemOrder = (url) => {
-        if (url) {
-            window.open(url, '_blank');
-        } else {
-            window.open('https://www.ubereats.com', '_blank');
-        }
+        window.open(url || 'https://www.ubereats.com', '_blank');
     };
 
     return (
@@ -84,14 +50,53 @@ export const MenuCategory = ({ data, titleClass }) => {
                 <div className="menu-grid">
                     {products.map((item) => (
                         <div key={item._id} className="menu-card">
-                            <div
-                                className="card-image-placeholder"
-                                style={{ backgroundImage: `url(${item.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                            ></div>
+
+                            {/* Image with top-left badge */}
+                            <div className="card-image-wrapper">
+                                <div
+                                    className="card-image-placeholder"
+                                    style={{
+                                        backgroundImage: `url(${item.imageUrl})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                                {item.badge && item.badge.trim() !== '' && (
+                                    <span
+                                        className="card-badge"
+                                        style={{ background: BADGE_COLORS[item.badgeColor] || BADGE_COLORS.red }}
+                                    >
+                                        {item.badge}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Card Content */}
                             <div className="card-content">
                                 <h3 className="card-title">{item.title}</h3>
-                                <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>Rs. {item.price}</div>
+
+                                {/* Price row: current + strikethrough original */}
+                                <div className="card-price-row">
+                                    <span className="card-price">LKR {Number(item.price).toLocaleString()}</span>
+                                    {item.originalPrice && (
+                                        <span className="card-original-price">
+                                            LKR {Number(item.originalPrice).toLocaleString()}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Bottom badge */}
+                                {item.bottomBadge && item.bottomBadge.trim() !== '' && (
+                                    <span
+                                        className="card-bottom-badge"
+                                        style={{ background: BADGE_COLORS[item.bottomBadgeColor] || BADGE_COLORS.red }}
+                                    >
+                                        {item.bottomBadge}
+                                    </span>
+                                )}
+
                                 <p className="card-description">{item.subtitle}</p>
+
                                 <div className="card-buttons">
                                     <button className="order-btn uber" onClick={() => handleItemOrder(item.uberLink)}>
                                         Order with Uber
@@ -104,7 +109,7 @@ export const MenuCategory = ({ data, titleClass }) => {
                         </div>
                     ))}
                     {products.length === 0 && (
-                        <p style={{ textAlign: 'center', width: '100%', gridColumn: '1/-1' }}>
+                        <p style={{ textAlign: 'center', width: '100%', gridColumn: '1/-1', color: '#999' }}>
                             Currently no items in this category.
                         </p>
                     )}
@@ -114,14 +119,12 @@ export const MenuCategory = ({ data, titleClass }) => {
     );
 };
 
-const MenuSections = () => {
-    return (
-        <div className="menu-sections-wrapper">
-            {sectionsData.map((section) => (
-                <MenuCategory key={section.id} data={section} />
-            ))}
-        </div>
-    );
-};
+const MenuSections = () => (
+    <div className="menu-sections-wrapper">
+        {sectionsData.map((section) => (
+            <MenuCategory key={section.id} data={section} />
+        ))}
+    </div>
+);
 
 export default MenuSections;

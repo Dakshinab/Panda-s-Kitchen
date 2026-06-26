@@ -2,17 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Hero.css';
 
-// Fallback slides in case DB is empty
 const DEFAULT_SLIDES = [
-    {
-        _id: 'default1',
-        imageUrl: '/assets/slide1.jpg'
-    },
-    {
-        _id: 'default2',
-        imageUrl: '/assets/slide2.jpg'
-    }
+    { _id: 'default1', imageUrl: '/assets/slide1.jpg' },
+    { _id: 'default2', imageUrl: '/assets/slide2.jpg' }
 ];
+
+const FALLBACK_UBER   = 'https://www.ubereats.com';
+const FALLBACK_PICKME = 'https://pickme.lk/food';
 
 const Hero = () => {
     const [slides, setSlides] = useState([]);
@@ -22,80 +18,93 @@ const Hero = () => {
         const fetchSlides = async () => {
             try {
                 const res = await axios.get('http://localhost:5000/api/hero');
-                if (res.data && res.data.length > 0) {
-                    setSlides(res.data);
-                } else {
-                    setSlides(DEFAULT_SLIDES);
-                }
-            } catch (err) {
-                console.error('Error fetching hero slides:', err);
+                setSlides(res.data?.length > 0 ? res.data : DEFAULT_SLIDES);
+            } catch {
                 setSlides(DEFAULT_SLIDES);
             }
         };
         fetchSlides();
     }, []);
 
-    // Auto-slide every 3 seconds
     useEffect(() => {
         if (slides.length <= 1) return;
         const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-        }, 3000);
-
+            setCurrentIndex(prev => (prev + 1) % slides.length);
+        }, 3500);
         return () => clearInterval(interval);
     }, [slides.length]);
 
-    // Get the position class for each slide
     const getSlideClass = (index) => {
         if (slides.length === 1) return 'carousel-slide active';
         const diff = (index - currentIndex + slides.length) % slides.length;
-
         if (diff === 0) return 'carousel-slide active';
         if (diff === 1) return 'carousel-slide right';
         if (diff === slides.length - 1) return 'carousel-slide left';
         return 'carousel-slide hidden';
     };
 
-    const handleOrder = () => {
-        window.open('https://www.ubereats.com', '_blank');
-    };
+    const currentSlide = slides[currentIndex];
+    const uberLink   = currentSlide?.uberLink?.trim()   || FALLBACK_UBER;
+    const pickMeLink = currentSlide?.pickMeLink?.trim() || FALLBACK_PICKME;
 
     return (
         <div className="hero-section">
-            <div className="carousel-container">
-                {slides.map((slide, index) => (
-                    <div
-                        key={slide._id}
-                        className={getSlideClass(index)}
-                    >
-                        <div
-                            className="carousel-image"
-                            style={{ backgroundImage: `url(${slide.imageUrl})` }}
-                        >
-                            <div className="hero-overlay"></div>
+            <div className="container">
+                <div className="hero-layout">
+                    {/* Left: Text */}
+                    <div className="hero-text">
+                        <span className="hero-eyebrow">Fresh &amp; Homemade Daily</span>
+                        <h1 className="hero-heading">
+                            Crafting <span>Timeless</span><br />
+                            Flavors, One<br />
+                            Bite at a Time
+                        </h1>
+                        <p className="hero-desc">
+                            Every burger patty is hand-pressed, every sauce crafted in-house.
+                            Zero artificial flavors — just pure, honest goodness.
+                        </p>
+                        <div className="hero-actions">
+                            <button className="btn-primary" onClick={() => window.open(uberLink, '_blank')}>
+                                Order on Uber Eats
+                            </button>
+                            <button className="btn-outline" onClick={() => window.open(pickMeLink, '_blank')}>
+                                Order on PickMe
+                            </button>
+                        </div>
+                        <div className="hero-stats">
+                            <div>
+                                <span className="hero-stat-num">50+</span>
+                                <span className="hero-stat-label">Menu Items</span>
+                            </div>
+                            <div>
+                                <span className="hero-stat-num">4.8★</span>
+                                <span className="hero-stat-label">Avg Rating</span>
+                            </div>
+                            <div>
+                                <span className="hero-stat-num">Daily</span>
+                                <span className="hero-stat-label">Fresh Made</span>
+                            </div>
                         </div>
                     </div>
-                ))}
-            </div>
 
-            {/* Hero Content - Only Buttons */}
-            <div className="hero-content-wrapper">
-                <div className="hero-content container">
-                    <div className="hero-buttons">
-                        <button className="btn-uber" onClick={handleOrder}>
-                            Order with Uber
-                        </button>
-                        <button
-                            className="btn-pickme"
-                            onClick={() => window.open('https://pickme.lk/food', '_blank')}
-                        >
-                            Order with PickMe
-                        </button>
+                    {/* Right: Carousel */}
+                    <div className="hero-visual">
+                        <div className="hero-circle" />
+                        <div className="carousel-container">
+                            {slides.map((slide, index) => (
+                                <div key={slide._id} className={getSlideClass(index)}>
+                                    <div
+                                        className="carousel-image"
+                                        style={{ backgroundImage: `url(${slide.imageUrl})` }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="hero-price-tag">From LKR 800</div>
                     </div>
                 </div>
             </div>
 
-            {/* Carousel Indicators */}
             {slides.length > 1 && (
                 <div className="carousel-indicators">
                     {slides.map((_, index) => (
@@ -103,7 +112,7 @@ const Hero = () => {
                             key={index}
                             className={`indicator ${index === currentIndex ? 'active' : ''}`}
                             onClick={() => setCurrentIndex(index)}
-                            aria-label={`Go to slide ${index + 1}`}
+                            aria-label={`Slide ${index + 1}`}
                         />
                     ))}
                 </div>
